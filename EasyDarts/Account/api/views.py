@@ -4,6 +4,7 @@ from random import random
 
 from django.core.files.base import ContentFile
 from django.core.validators import validate_email
+from django.http.response import HttpResponse
 from django.template.loader import render_to_string
 from requests import Response
 from rest_framework import status
@@ -75,7 +76,7 @@ def registration_view(request):
         )
 
 
-@api_view(['GET', ])
+@api_view(['GET'])
 def account_properties_view(request):
     account = request.user
     try:
@@ -85,7 +86,11 @@ def account_properties_view(request):
 
     serializer = AccountPropertiesSerializer(account)
     return Response(serializer.data)
-
+@api_view(['POST'])
+def LOGIN(request):
+    print(request.data)
+    user = Account.objects.get(user_id=request.user.id)
+    return HttpResponse(request.POST)
 
 @api_view(('GET',))
 def all_accounts_view(request):

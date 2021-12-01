@@ -6,13 +6,21 @@ from varzeshkaran.models import *
 class PlayerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Athlete
-        fields = '__all__'
+        fields = ['image', 'first_name', 'last_name', 'ageType']
+
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Athlete
+        fields = ['image', 'first_name', 'last_name', 'ageType']
+
 
 
 class RaceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Race
-        fields = '__all__'
+        fields = ['name' , 'holdingDate' , 'location' , 'EntranceFee']
 
 class RefreeSerializer(serializers.ModelSerializer):
     CertificationFile = serializers.FileField()

@@ -1,6 +1,7 @@
 import json
 
 from django.http import JsonResponse
+from django.http.response import HttpResponse
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 
@@ -18,13 +19,23 @@ def get_all_Athletes(request):
         serializer = PlayerSerializer(all_players, many=True)
 
         data = json.loads(json.dumps(serializer.data))
-        return Response(data, status=status.HTTP_200_OK)
+        return Response(data,status=status.HTTP_200_OK)
     else:
         myData = JSONParser().parse(request)
         ASerializer = PlayerSerializer(data=myData)
         if ASerializer.is_valid():
             return Response(ASerializer , status=status.HTTP_201_CREATED)
         return Response(ASerializer.errors , status=status.HTTP_400_BAD_REQUEST)
+
+@permission_classes((IsAuthenticated,))
+@api_view(['GET'])
+def Athlete_Profile(request,id = None):
+    athlete = Athlete.objects.get(user_id = id)
+    serializer = PlayerSerializer(athlete)
+    data = json.loads(json.dumps(serializer.data))
+    return Response(data,status=status.HTTP_200_OK)
+  
+
 
 @permission_classes((IsAuthenticated,))
 @api_view(['GET', 'POST'])
@@ -45,6 +56,17 @@ def get_all_Refrees(request):
         return Response(RSerializer.errors , status=status.HTTP_400_BAD_REQUEST)
 
 @permission_classes((IsAuthenticated,))
+@api_view(['GET'])
+def Refree_Detail(request , id = None):
+    refree = Refree.objects.get(user_id= id)
+    serializer = RefreeSerializer(refree)
+    data = json.loads(json.dumps(serializer.data))
+    return Response(data,status=status.HTTP_200_OK)
+  
+    
+
+
+@permission_classes((IsAuthenticated,))
 @api_view(['GET', 'POST'])
 def get_all_coaches(request):
     if request.method == 'GET':
@@ -62,6 +84,14 @@ def get_all_coaches(request):
             return Response(AdminClubSerializer.data , status=status.HTTP_201_CREATED)
 
         return Response(AdminClubSerializer.errors , status=status.HTTP_400_BAD_REQUEST)
+
+@permission_classes((IsAuthenticated,))
+@api_view(['GET'])
+def Coach_Detail(request , id = None):
+    coach = Coach.objects.get(user_id= id)
+    serializer = CoachSerializer(coach)
+    data = json.loads(json.dumps(serializer.data))
+    return Response(data,status=status.HTTP_200_OK)
 
 
 @permission_classes((IsAuthenticated,))
@@ -85,6 +115,16 @@ def admin_list(request):
         return Response(mySerializer.errors,
                             status=status.HTTP_400_BAD_REQUEST
                             )
+
+@permission_classes((IsAuthenticated))
+@api_view(['GET'])
+def AdminClub_Detail(request , id = None):
+    admin = AdminOfClub.objects.get(user_id = id)
+    serializer = AdminSerializer(admin)
+    data = json.loads(json.dumps(serializer.data))
+    return Response(data,status=status.HTTP_200_OK)
+
+
 
 @permission_classes((IsAuthenticated))
 @api_view(['GET' , 'POST'])
